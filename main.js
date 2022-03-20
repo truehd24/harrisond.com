@@ -900,5 +900,6 @@ console.log(ambience)
 //renderer.render(scene, camera);
 
 window.addEventListener( 'pointermove', onPointerMove );
-window.addEventListener( 'touchstart click', onClick );
+window.addEventListener( 'click', onClick );
 window.addEventListener('resize', onresize, false);
+window.addEventListener( 'touchstart', onTouch );
