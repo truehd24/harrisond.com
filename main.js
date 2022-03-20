@@ -507,6 +507,8 @@ function onClick(event) {
   }
 
 function onTouch(event) {
+  pointer.x = (event.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
   onClick()
 }
 
