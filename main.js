@@ -258,8 +258,8 @@ camera.lookAt( 0, 0, 0 );
 
 function getFov() {
   if (aspect < 1) {
-    if (aspect < 0.42){
-      var fov = 75/aspect}
+    if (aspect > 0.5){
+      var fov = (75/aspect)*0.9}
     else {
       var fov = 120
     }
@@ -270,6 +270,8 @@ function getFov() {
   }
 return fov
 }
+
+//console.log(getFov())
 
 //new OrbitControls(camera, renderer.domElement);
 
@@ -299,6 +301,7 @@ loader.load( './CubeRotate.wav', function( buffer ) {
   cubeRotate.setLoop( false)
 });
 
+
 const ambience = new THREE.Audio(listener);
 
 scene.add(ambience)
@@ -310,6 +313,8 @@ loader.load('./Windows95StartupPaul.mp3', function(buffer2){
   ambience.setVolume(0.5)
   ambience.play()
 });
+
+
  /*
 const myText = new Text()
 scene.add(myText)
@@ -378,23 +383,29 @@ function newCardBacksideTexture(cardBackSideText) {
     return canvasTex;
 }*/
 
-//var anisotropy = renderer.capabilities.getMaxAnisotropy()
+var anisotropy = renderer.capabilities.getMaxAnisotropy()
 
 const textureLoader = new THREE.TextureLoader();
 
-//texture.anisotropy = anisotropy
+const rightMap = textureLoader.load('./right.png')
+const leftMap = textureLoader.load('./left.png')
+const topMap = textureLoader.load('./top.png')
+const bottomMap = textureLoader.load('./bottom.png')
+const frontMap = textureLoader.load('./front.png')
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 const material =  [ 
-  new THREE.MeshLambertMaterial({map: textureLoader.load('./right.png')}),
-  new THREE.MeshLambertMaterial({map: textureLoader.load('./left.png')}),
-  new THREE.MeshLambertMaterial({map: textureLoader.load('./top.png')}),
-  new THREE.MeshLambertMaterial({map: textureLoader.load('./bottom.png')}),
-  new THREE.MeshLambertMaterial({map: textureLoader.load('./front.png')}),
+  new THREE.MeshLambertMaterial({map: rightMap}),
+  new THREE.MeshLambertMaterial({map: leftMap}),
+  new THREE.MeshLambertMaterial({map: topMap}),
+  new THREE.MeshLambertMaterial({map: bottomMap}),
+  new THREE.MeshLambertMaterial({map: frontMap}),
   new THREE.MeshBasicMaterial()
 ];
 
 const box = new THREE.Mesh(boxGeometry, material);
+
+//console.log(box)
 
 const plane = new THREE.PlaneGeometry(100, 100, 100, 100);
 const materialPlane = new THREE.MeshPhongMaterial({
@@ -460,14 +471,20 @@ const pointer = new THREE.Vector2();
 
 function onPointerMove( event ) {
 
-  // calculate pointer position in normalized device coordinates
-  // (-1 to +1) for both components
-
   pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
+
+function onTouch(event){
+
+  onPointerMove(event)
+  onClick(event)
 }
 
 function onClick(event) {
+  event.preventDefault()
+  event.stopPropagation()
 
   let intersectUp = raycaster.intersectObject( up );
   let intersectDown = raycaster.intersectObject( down );
@@ -504,48 +521,7 @@ function onClick(event) {
        return
     }
   }
-  }
-
-function onTouchend(event) {
-  pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
-
-  let intersectUp = raycaster.intersectObject( up );
-  let intersectDown = raycaster.intersectObject( down );
-  let intersectLeft = raycaster.intersectObject( left );
-  let intersectRight = raycaster.intersectObject( right );
-
-  if ( intersectUp.length > 0 ) {
-    if (box.rotation.x < 1.5) {
-    boxUp()}
-    else {
-      return
-    }
-  }
-  else if ( intersectDown.length > 0 ) {
-    if (box.rotation.x > -1.5) {
-      boxDown()}
-      else {
-        return
-    }
-  }
-
-  else if ( intersectLeft.length > 0 ) {
-    if (box.rotation.y < 1.5) {
-      boxLeft()}
-      else {
-       return
-    }
-  }
-
-  else if ( intersectRight.length > 0 ) {
-     if (box.rotation.y > -1.5) {
-      boxRight()}
-      else {
-       return
-    }
-  }
-  }
+}
 
 function boxUp() {
 
@@ -598,19 +574,15 @@ const materialRight = new THREE.MeshLambertMaterial({
 
 const up = new THREE.Mesh(button1, materialUp);
 up.position.set(0,0.16,1.25);
-//up.callback = function() {cubeUp();};
 
 const down = new THREE.Mesh(button1, materialDown);
 down.position.set(0,-0.16,1.25);
-//down.callback = function() {cubeDown();};
 
 const left = new THREE.Mesh(button2, materialLeft);
 left.position.set(-0.16,0,1.25);
-//left.callback = function() {cubeLeft();};
 
 const right = new THREE.Mesh(button2, materialRight);
 right.position.set(0.16,0,1.25);
-//right.callback = function() {cubeRight();};
 
 scene.add(up);
 scene.add(down);
@@ -644,8 +616,8 @@ window.onresize = function () {
   camera.aspect = width / height;
 
   if (camera.aspect < 1) {
-    if (camera.aspect < 0.42){
-    gsap.to(camera, {fov: 75/camera.aspect})}
+    if (camera.aspect > 0.5){
+    gsap.to(camera, {fov: (75/camera.aspect)*0.9})}
     else {
       gsap.to(camera, {fov: 120})}
     }
@@ -914,9 +886,6 @@ function animate(){
     reset()
   }
 
-  //console.log(down.material.opacity)
-  //console.log(box.rotation.z)
-
   const {array, originalPosition, randomValues} = meshPlane.geometry.attributes.position
   for (let i = 0; i < array.length; i += 3) {
     array[i] = originalPosition[i] + Math.sin(frame + randomValues[i]) * 0.001
@@ -927,19 +896,12 @@ function animate(){
 
   buttonanimate()
 
-
-  //texture.needsUpdate = true
-
   renderer.render( scene, camera )
 
 };
 
 animate();
-//console.log(ambience)
-//console.log(left.position.y)
-//renderer.render(scene, camera);
 
-window.addEventListener( 'pointermove', onPointerMove );
-window.addEventListener( 'click', onClick );
+window.addEventListener( 'pointermove', onPointerMove, false );
+window.addEventListener( 'pointerdown', onTouch, false );
 window.addEventListener('resize', onresize, false);
-window.addEventListener( 'touchend', onTouchend, false );
