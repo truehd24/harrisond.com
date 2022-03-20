@@ -308,11 +308,8 @@ loader.load('./Windows95StartupPaul.mp3', function(buffer2){
   ambience.setBuffer(buffer2)
   ambience.setLoop(true)
   ambience.setVolume(0.5)
+  ambience.play()
 });
-
-function ambience() {
-   ambience.play()
-}
  /*
 const myText = new Text()
 scene.add(myText)
@@ -468,7 +465,6 @@ function onPointerMove( event ) {
 
   pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-ambience();
 }
 
 function onClick(event) {
