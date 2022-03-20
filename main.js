@@ -506,6 +506,9 @@ function onClick(event) {
   }
   }
 
+function onTouch(event) {
+  onClick()
+}
 
 function boxUp() {
 
