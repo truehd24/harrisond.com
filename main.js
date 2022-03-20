@@ -506,11 +506,46 @@ function onClick(event) {
   }
   }
 
-function onTouch(event) {
-  pointer.x = (event.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
-  onClick()
-}
+function onTouchend(event) {
+  pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+  let intersectUp = raycaster.intersectObject( up );
+  let intersectDown = raycaster.intersectObject( down );
+  let intersectLeft = raycaster.intersectObject( left );
+  let intersectRight = raycaster.intersectObject( right );
+
+  if ( intersectUp.length > 0 ) {
+    if (box.rotation.x < 1.5) {
+    boxUp()}
+    else {
+      return
+    }
+  }
+  else if ( intersectDown.length > 0 ) {
+    if (box.rotation.x > -1.5) {
+      boxDown()}
+      else {
+        return
+    }
+  }
+
+  else if ( intersectLeft.length > 0 ) {
+    if (box.rotation.y < 1.5) {
+      boxLeft()}
+      else {
+       return
+    }
+  }
+
+  else if ( intersectRight.length > 0 ) {
+     if (box.rotation.y > -1.5) {
+      boxRight()}
+      else {
+       return
+    }
+  }
+  }
 
 function boxUp() {
 
@@ -900,11 +935,11 @@ function animate(){
 };
 
 animate();
-console.log(ambience)
+//console.log(ambience)
 //console.log(left.position.y)
 //renderer.render(scene, camera);
 
 window.addEventListener( 'pointermove', onPointerMove );
 window.addEventListener( 'click', onClick );
 window.addEventListener('resize', onresize, false);
-window.addEventListener( 'touchstart', onTouch );
+window.addEventListener( 'touchend', onTouchend, false );
