@@ -173,7 +173,7 @@ GOOGLE THAT IF YOU WANT TO LEARN MORE
 dont say i didnt warn ya
 */
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+//import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 //import dat from 'dat.gui';
 //import {gsap} from 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js';
 //import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
