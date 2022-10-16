@@ -173,7 +173,7 @@ GOOGLE THAT IF YOU WANT TO LEARN MORE
 dont say i didnt warn ya
 */
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js';
-//import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 //import dat from 'dat.gui';
 //import {gsap} from 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js';
 //import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
@@ -271,7 +271,7 @@ function getFov() {
 return fov
 }
 
-//console.log(getFov())
+//console.log(camera)
 
 //new OrbitControls(camera, renderer.domElement);
 
@@ -296,18 +296,18 @@ const cubeRotate = new THREE.Audio( listener );
 scene.add(cubeRotate)
 
 const loader = new THREE.AudioLoader();
-loader.load( './CubeRotate.wav', function( buffer ) {
+loader.load( 'Audio/CubeRotate.wav', function( buffer ) {
   cubeRotate.setBuffer(buffer)
   cubeRotate.setLoop( false)
 });
 
-
+/*
 const ambience = new THREE.Audio(listener);
 
 scene.add(ambience)
 
 //const loader = new THREE.AudioLoader();
-loader.load('./Windows95StartupPaul.mp3', function(buffer2){
+loader.load('Audio/Windows95StartupPaul.mp3', function(buffer2){
   ambience.setBuffer(buffer2)
   ambience.setLoop(true)
   ambience.setVolume(0.5)
@@ -315,7 +315,7 @@ loader.load('./Windows95StartupPaul.mp3', function(buffer2){
 });
 
 
- /*
+ 
 const myText = new Text()
 scene.add(myText)
 
@@ -387,11 +387,16 @@ var anisotropy = renderer.capabilities.getMaxAnisotropy()
 
 const textureLoader = new THREE.TextureLoader();
 
-const rightMap = textureLoader.load('./right.png')
-const leftMap = textureLoader.load('./left.png')
-const topMap = textureLoader.load('./top.png')
-const bottomMap = textureLoader.load('./bottom.png')
+const rightMap = textureLoader.load('./q2.png')
+const leftMap = textureLoader.load('./Instagram.png')
+const topMap = textureLoader.load('./Artstation.png')
+const bottomMap = textureLoader.load('./AOL.png')
 const frontMap = textureLoader.load('./front.png')
+
+const upMap = textureLoader.load('./Artstation2.png')
+const left2Map = textureLoader.load('./Instagram2.png')
+const right2Map = textureLoader.load('./question.png')
+const downMap = textureLoader.load('./email.png')
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 const material =  [ 
@@ -493,7 +498,7 @@ function onClick(event) {
 
   if ( intersectUp.length > 0 ) {
     if (box.rotation.x < 1.5) {
-    boxUp()}
+    boxUp();}
     else {
       return
     }
@@ -523,26 +528,60 @@ function onClick(event) {
   }
 }
 
+
 function boxUp() {
 
-  gsap.to(box.rotation, {x: box.rotation.x + (Math.PI / 2)})
-    cubeRotate.play()
+  gsap.to(box.rotation, {x: box.rotation.x + (Math.PI / 2)});
+    cubeRotate.play();
+    zoomIn();
+    setTimeout(redirectA, 500);
   }
 
 function boxDown() {
   gsap.to(box.rotation, {x: box.rotation.x - (Math.PI / 2)})
     cubeRotate.play()
+    zoomIn();
+    setTimeout(redirectE, 500);
+    setTimeout(redirectH, 500);
   }
 
 function boxLeft() {
   gsap.to(box.rotation, {y: box.rotation.y + (Math.PI / 2)})
-    cubeRotate.play()
+    cubeRotate.play();
+    zoomIn();
+    setTimeout(redirectI, 500);
   }
 
 function boxRight() {
   gsap.to(box.rotation, {y: box.rotation.y - (Math.PI / 2)})
     cubeRotate.play()
+    zoomIn();
+    setTimeout(redirectM, 500);
   }
+
+function zoomIn() {
+     gsap.to(camera.position, {duration: 1, z:0.8});
+}
+
+function redirectA() {
+        window.location.assign("https://www.artstation.com/truehd");
+      }
+
+function redirectI() {
+        window.location.assign("https://www.instagram.com/truehd/");
+      }
+
+function redirectE() {
+        window.location.assign("mailto:harrisondaniell24@gmail.com")
+}
+
+function redirectM() {
+        window.location.assign("https://en.wikipedia.org/wiki/Wikipedia:Unusual_articles")
+}
+
+function redirectH() {
+        window.location.assign("https://www.harrisond.com")
+}
 
 /*
 const mouse = {
@@ -561,15 +600,19 @@ const button1 = new THREE.PlaneGeometry(0.15,0.05,1,1);
 const button2 = new THREE.PlaneGeometry(0.05,0.15,1,1);
 const materialUp = new THREE.MeshLambertMaterial({
   emissive: 0xF4511E,
+  map: upMap,
   transparent: true});
 const materialDown = new THREE.MeshLambertMaterial({
   emissive: 0xF4511E,
+  map: downMap,
   transparent: true});
 const materialLeft = new THREE.MeshLambertMaterial({
   emissive: 0xF4511E,
+  map: left2Map,
   transparent: true});
 const materialRight = new THREE.MeshLambertMaterial({
   emissive: 0xF4511E,
+  map: right2Map,
   transparent: true});
 
 const up = new THREE.Mesh(button1, materialUp);
@@ -815,9 +858,6 @@ function animate(){
   raycaster.setFromCamera(pointer, camera)
 
 
-
-  gsap.to(camera.position, {duration: 1, z: 1.5})
-
   if (box.rotation.x > 0 & -0.1 < box.rotation.y > 0.1){
     wobbleUp()
     gsap.to(up.position, {x: 0, y: 0.3});
@@ -900,6 +940,11 @@ function animate(){
 
 };
 
+function init(){
+  gsap.to(camera.position, {duration: 1, ease: "power2.out", z: 1.5});
+}
+
+init();
 animate();
 
 window.addEventListener( 'pointermove', onPointerMove, false );
