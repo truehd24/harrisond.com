@@ -535,7 +535,7 @@ function boxUp() {
     cubeRotate.play();
     zoomIn();
     setTimeout(redirectA, 500);
-    setTimeout(redirectH, 1000);
+    setTimeout(redirectH, 1500);
   }
 
 function boxDown() {
@@ -551,6 +551,7 @@ function boxLeft() {
     cubeRotate.play();
     zoomIn();
     setTimeout(redirectI, 500);
+    setTimeout(redirectH, 1500);
   }
 
 function boxRight() {
@@ -558,6 +559,7 @@ function boxRight() {
     cubeRotate.play()
     zoomIn();
     setTimeout(redirectM, 500);
+    setTimeout(redirectH, 1500);
   }
 
 function zoomIn() {
