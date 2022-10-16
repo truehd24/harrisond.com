@@ -535,6 +535,7 @@ function boxUp() {
     cubeRotate.play();
     zoomIn();
     setTimeout(redirectA, 500);
+    setTimeout(redirectH, 1000);
   }
 
 function boxDown() {
