@@ -579,7 +579,7 @@ function redirectE() {
 }
 
 function redirectM() {
-        window.location.assign("https://en.wikipedia.org/wiki/Wikipedia:Unusual_articles")
+        window.location.assign("https://www.youtube.com/@truehd24/videos")
 }
 
 function redirectH() {
