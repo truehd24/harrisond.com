@@ -387,7 +387,7 @@ var anisotropy = renderer.capabilities.getMaxAnisotropy()
 
 const textureLoader = new THREE.TextureLoader();
 
-const rightMap = textureLoader.load('./q2.png')
+const rightMap = textureLoader.load('./YButton.png')
 const leftMap = textureLoader.load('./Instagram.png')
 const topMap = textureLoader.load('./Artstation.png')
 const bottomMap = textureLoader.load('./AOL.png')
@@ -395,7 +395,7 @@ const frontMap = textureLoader.load('./front.png')
 
 const upMap = textureLoader.load('./Artstation2.png')
 const left2Map = textureLoader.load('./Instagram2.png')
-const right2Map = textureLoader.load('./question.png')
+const right2Map = textureLoader.load('./Youtube.png')
 const downMap = textureLoader.load('./email.png')
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
