@@ -12,7 +12,7 @@ button.classList.add('visible');
 } else {
 button.classList.remove('visible');
 }
-};
+}
 
 function scrollToTop() {
 window.scrollTo({
