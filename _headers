@@ -1,0 +1,18 @@
+
+# Cloudflare Pages _headers file
+# Sets correct Content-Type headers so browsers accept media files.
+
+/media/vids/*.mp4
+  Content-Type: video/mp4
+
+/media/thumb/*.avif
+  Content-Type: image/avif
+
+/media/preview/*.avif
+  Content-Type: image/avif
+
+/media/web/*.avif
+  Content-Type: image/avif
+
+/svgs/*.svg
+  Content-Type: image/svg+xml
