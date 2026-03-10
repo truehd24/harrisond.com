@@ -241,7 +241,11 @@
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const href = link.getAttribute('href');
-            const target = document.querySelector(href);
+            // IDs starting with a digit (e.g. "#3d-cg") are valid HTML but
+            // invalid CSS selectors — querySelector('#3d-cg') throws a DOMException.
+            // Use getElementById for hash hrefs as a safe universal fallback.
+            const id = href && href.startsWith('#') ? href.slice(1) : null;
+            const target = id ? document.getElementById(id) : document.querySelector(href);
             if (!target) return;
 
             // Eagerly load the target section's images before we scroll.
@@ -262,7 +266,9 @@
     // Also handle direct loads to a hash URL
     window.addEventListener('load', () => {
         if (window.location.hash) {
-            const target = document.querySelector(window.location.hash);
+            const hash = window.location.hash;
+            const id = hash.startsWith('#') ? hash.slice(1) : null;
+            const target = id ? document.getElementById(id) : null;
             if (target) {
                 // Eagerly load the target section before scrolling to it.
                 prioritizeSection(target);
