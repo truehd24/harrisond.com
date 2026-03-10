@@ -1,0 +1,737 @@
+/* ============================================
+   FONTS
+============================================ */
+@font-face {
+    font-family: 'DM Sans';
+    src: url('fonts/dm-sans-v17-latin-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    src: url('fonts/dm-sans-v17-latin-italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    src: url('fonts/dm-sans-v17-latin-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    src: url('fonts/dm-sans-v17-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('fonts/work-sans-v24-latin-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('fonts/work-sans-v24-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('fonts/work-sans-v24-latin-700italic.woff2') format('woff2');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('fonts/work-sans-v24-latin-800.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('fonts/work-sans-v24-latin-900.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================
+   RESET & BASE
+============================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #FFFFFF;
+    --accent: #F36D21;
+    --black: #231F20;
+    --border-weight: 5.33px;
+    /* 4pt = 5.33px */
+    --border-radius: 24px;
+    /* 0.25in ≈ 24px */
+    --shadow-offset: 6px;
+    --white: #FFFFFF;
+
+    /* Adjustable Stroke Widths */
+    --stroke-width-lg: 2px;
+    --stroke-width-sm: 1.5px;
+
+    /* Rounded stroke simulations using text-shadow and calc()
+
+    --stroke-5-white:
+        calc(var(--stroke-width-lg) * 1) 0 0 #fff,
+        calc(var(--stroke-width-lg) * -1) 0 0 #fff,
+        0 calc(var(--stroke-width-lg) * 1) 0 #fff,
+        0 calc(var(--stroke-width-lg) * -1) 0 #fff,
+        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * 0.7) 0 #fff,
+        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * 0.7) 0 #fff,
+        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * -0.7) 0 #fff,
+        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * -0.7) 0 #fff;
+
+    --stroke-5-accent:
+        calc(var(--stroke-width-lg) * 1) 0 0 var(--accent),
+        calc(var(--stroke-width-lg) * -1) 0 0 var(--accent),
+        0 calc(var(--stroke-width-lg) * 1) 0 var(--accent),
+        0 calc(var(--stroke-width-lg) * -1) 0 var(--accent),
+        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * 0.7) 0 var(--accent),
+        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * 0.7) 0 var(--accent),
+        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * -0.7) 0 var(--accent),
+        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * -0.7) 0 var(--accent);
+
+    --stroke-3-white:
+        calc(var(--stroke-width-sm) * 1) 0 0 #fff,
+        calc(var(--stroke-width-sm) * -1) 0 0 #fff,
+        0 calc(var(--stroke-width-sm) * 1) 0 #fff,
+        0 calc(var(--stroke-width-sm) * -1) 0 #fff,
+        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * 0.7) 0 #fff,
+        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * 0.7) 0 #fff,
+        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * -0.7) 0 #fff,
+        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * -0.7) 0 #fff;
+
+    --stroke-3-accent:
+        calc(var(--stroke-width-sm) * 1) 0 0 var(--accent),
+        calc(var(--stroke-width-sm) * -1) 0 0 var(--accent),
+        0 calc(var(--stroke-width-sm) * 1) 0 var(--accent),
+        0 calc(var(--stroke-width-sm) * -1) 0 var(--accent),
+        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * 0.7) 0 var(--accent),
+        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * 0.7) 0 var(--accent),
+        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * -0.7) 0 var(--accent),
+        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * -0.7) 0 var(--accent);
+    */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--black);
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+/* ============================================
+   TYPOGRAPHY - Work Sans 85% Condensed
+============================================ */
+h1 {
+    font-weight: 900;
+    font-size: 65px;
+    line-height: 0.95;
+    letter-spacing: 0.05em;
+}
+
+h2 {
+    font-family: 'Work Sans', sans-serif;
+    font-style: italic;
+    text-transform: uppercase;
+    transform: scaleX(0.85);
+    transform-origin: center;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: 0.1em;
+}
+
+/* Shared condensed text pattern for Work Sans 85% width */
+.toc-link,
+.lightbox-title,
+.footer-brand {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    transform: scaleX(0.85);
+}
+
+h3 {
+    font-size: 16px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.main-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    min-height: 100vh;
+    gap: 25px;
+}
+
+@media (max-width: 900px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+        padding: 1px;
+    }
+}
+
+/* ============================================
+   HEADER / NAME BLOCK
+============================================ */
+.header-name {
+    text-align: center;
+    position: sticky;
+    top: 1px;
+    z-index: 101;
+    padding: 0px 1px 10px;
+}
+
+/* ============================================
+   SHARED BOX PATTERNS
+============================================ */
+/* Shared box-inner base styles */
+.name-box-inner,
+.info-section-header-inner,
+.info-section-box-inner,
+.content-section-header-inner,
+.content-section-box-inner {
+    position: relative;
+    background: var(--white);
+    border: var(--border-weight) solid var(--accent);
+    border-radius: var(--border-radius);
+    z-index: 2;
+}
+
+/* Shared box-shadow base styles */
+.name-box-shadow,
+.info-section-box-shadow,
+.content-section-box-shadow {
+    position: absolute;
+    top: var(--shadow-offset);
+    bottom: calc(var(--shadow-offset) * -1);
+    background: var(--black);
+    border-radius: var(--border-radius);
+    z-index: 1;
+}
+
+.name-box {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+    transition: max-width 0.4s cubic-bezier(0.25, 1, 0.5, 1), width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.header-name.is-stuck .name-box {
+    max-width: 900px;
+    width: 92%;
+}
+
+.name-box-inner {
+    padding: 16px 40px;
+}
+
+.name-box-shadow {
+    left: 10px;
+    right: 10px;
+}
+
+.name-box .header-svg {
+    width: auto;
+    max-width: 100%;
+    height: 76px;
+    object-fit: contain;
+    display: block;
+    position: relative;
+    z-index: 2;
+    margin: 0 auto;
+}
+
+/* ============================================
+   INFO SECTIONS
+============================================ */
+.info-section {
+    position: relative;
+    text-align: center;
+
+}
+
+.info-section-header {
+    position: relative;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: calc(var(--border-weight) * -1);
+    max-width: 100%;
+    z-index: 3;
+}
+
+.info-section-header-inner {
+    padding: 8px 20px;
+    overflow: hidden;
+}
+
+.info-section-header .section-svg,
+.content-section-header .section-svg {
+    width: auto;
+    max-width: 100%;
+    height: 38px;
+    object-fit: contain;
+    display: block;
+    position: relative;
+    z-index: 2;
+}
+
+.info-section-box {
+    position: relative;
+}
+
+.info-section-box-inner {
+    padding: 12px 16px;
+    text-align: center;
+}
+
+.info-section-box-shadow {
+    left: 8px;
+    right: 8px;
+}
+
+.info-section p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* Project categories */
+.grid-category-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    transform: scaleX(0.85);
+    transform-origin: left;
+    font-size: 18px;
+    color: var(--black);
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent);
+    display: inline-block;
+}
+
+.grid-category-title:first-child {
+    margin-top: 0;
+}
+
+/* ============================================
+   MAIN CONTENT
+============================================ */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Sticky Contents Section */
+.sticky-contents {
+    position: sticky;
+    top: 126px;
+    z-index: 102;
+}
+
+/* Sticky Contents box shadow visibility */
+.sticky-contents .info-section-box-shadow {
+    display: block;
+}
+
+/* Contact Info Row */
+.contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 48px;
+    justify-content: center;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contact-item-label {
+    font-size: 16px;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 2px;
+}
+
+.contact-item-value {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+.contact-item-value a:hover {
+    color: var(--accent);
+}
+
+/* Table of Contents Navigation */
+.toc-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.toc-link {
+    font-size: 20px;
+    line-height: 1.5;
+    transform-origin: center;
+    display: inline-block;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+.toc-link[href="#3d-cg"] {
+    margin: 0 10px;
+}
+
+.toc-link[href="#video"] {
+    margin-left: 10px;
+}
+
+.toc-link:last-child {
+    border-bottom: none;
+}
+
+.toc-link:hover {
+    color: var(--accent);
+}
+
+/* Section with header */
+.content-section {
+    position: relative;
+    text-align: center;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 60px;
+    /* NOTE: content-visibility: auto was intentionally removed — it caused the browser
+       to skip rendering off-screen sections, making their grid items report height 0
+       during masonry layout calculation, causing all items to stack on top of each other. */
+}
+
+.content-section-header {
+    position: relative;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: calc(var(--border-weight) * -1);
+    max-width: 100%;
+    z-index: 3;
+}
+
+.content-section-header-inner {
+    padding: 10px 28px;
+}
+
+/* section-svg styles moved to shared rule with .info-section-header .section-svg */
+
+.content-section-box {
+    position: relative;
+    width: 100%;
+    padding: 0px 1px 0px 1px;
+}
+
+.content-section-box-inner {
+    padding: 20px;
+    /* Reduced from default/implicit */
+}
+
+.content-section-box-shadow {
+    left: 10px;
+    right: 10px;
+}
+
+/* ============================================
+   MEDIA GRID (Portfolio Items) - CSS Grid Masonry
+============================================ */
+.media-grid {
+    position: relative;
+    width: 100%;
+}
+
+.media-item {
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+}
+
+.media-item:hover {
+    z-index: 1;
+}
+
+@keyframes thumb-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.35;
+    }
+}
+
+.media-item-inner {
+    display: block;
+    height: var(--item-height, 550px);
+    border: 5px solid var(--accent);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s ease, background 0.4s ease;
+    background: var(--accent);
+    animation: thumb-pulse 1.8s ease-in-out infinite;
+}
+
+.media-item-inner:has(> img.media-thumb.loaded) {
+    background: transparent;
+    animation: none;
+}
+
+.media-item:hover .media-item-inner {
+    transform: scale(1.1);
+}
+
+.media-thumb {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-item:hover
+/* Hide overlay when preview is playing */
+.media-item.playing-preview
+
+/* .content-section styles moved to main definition above */
+.content-section:last-child {
+    margin-bottom: 0;
+}
+
+/* ============================================
+   LIGHTBOX
+============================================ */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 119, 0, 0.75);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lightbox-content {
+    max-width: 90vw;
+    max-height: 85vh;
+    position: relative;
+}
+
+.lightbox-content img,
+.lightbox-content video {
+    max-width: 100%;
+    max-height: 85vh;
+    border: var(--border-weight) solid var(--white);
+    border-radius: var(--border-radius);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 60px;
+    /* Adjust size as needed for the SVG */
+    height: 60px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: 0;
+    /* Remove padding */
+}
+
+/* Icon Swap Logic */
+.icon-swap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.icon-swap .icon-before,
+.icon-swap .icon-after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.2s ease;
+}
+
+.icon-swap .icon-after {
+    opacity: 0;
+}
+
+.lightbox-close:hover .icon-after,
+.lightbox-nav:hover .icon-after {
+    opacity: 1;
+}
+
+.lightbox-close:hover .icon-before,
+.lightbox-nav:hover .icon-before {
+    opacity: 0;
+}
+
+.lightbox-info {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: var(--white);
+    padding: 16px 24px;
+    border-radius: var(--border-radius);
+    border: var(--border-weight) solid var(--accent);
+}
+
+.lightbox-title {
+    font-size: 1.2rem;
+    transform-origin: left;
+    color: var(--black);
+    margin-bottom: 4px;
+}
+
+.lightbox-meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    /* Adjust size as needed */
+    height: 100px;
+    /* Adjust height based on SVG aspect ratio */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.lightbox-nav:hover {
+    background: transparent;
+}
+
+/* Removed lightbox-nav svg styles since we use icon-swap now and want raw SVGs */
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+.footer {
+    background: var(--black);
+    color: var(--white);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    margin: 40px 40px 0;
+}
+
+.footer-copy {
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.footer-brand {
+    font-weight: 900;
+    font-size: 6rem;
+    color: var(--accent);
+    transform: scaleX(0.85);
+    transform-origin: center;
+}
+
+@media (max-width: 600px) {
+    .footer {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 24px;
+        margin: 24px 24px 0;
+    }
+}
+
+/* Scroll Offset for Fixed Header + Fixed Contents */
+#contact,
+#video,
+#graphic-design,
+#motion-graphics {
+    scroll-margin-top: 280px;
+    /* Increased offset (~140px header + ~120px contents + buffer) */
+}

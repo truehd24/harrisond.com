@@ -1,0 +1,8 @@
+# Exclude all batch files
+*.bat
+opencode.json
+
+# Dev-only tooling (never commit to production)
+dev-drag.js
+index_v*.html
+cleanup-styles.ps1
