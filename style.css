@@ -240,6 +240,7 @@ a {
 /* Shared box-shadow base styles */
 .name-box-shadow,
 .info-section-box-shadow,
+.content-section-header-shadow,
 .content-section-box-shadow {
     position: absolute;
     top: var(--shadow-offset);
@@ -404,7 +405,7 @@ a {
     font-size: 20px;
 }
 
-.contact-item-value a:hover {
+.content-section-header:hover {
     color: var(--accent);
 }
 
@@ -466,6 +467,11 @@ a {
 
 .content-section-header-inner {
     padding: 10px 28px;
+    transition: background-color 0.2s ease;
+}
+
+a.content-section-header:hover .content-section-header-inner {
+    background-color: var(--accent);
 }
 
 /* section-svg styles moved to shared rule with .info-section-header .section-svg */
