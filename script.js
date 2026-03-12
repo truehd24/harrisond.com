@@ -282,13 +282,20 @@
     // MASONRY GRID LAYOUT
     // ============================================
     const GAP = 25;
-    const ITEM_HEIGHT_PX = 550; // canonical height in device/physical pixels
+    const ITEM_HEIGHT_PX = 550; // canonical 4K height in device/physical pixels
 
-    // Compute the CSS-pixel height that equals ITEM_HEIGHT_PX device pixels
-    // at the current devicePixelRatio, then expose it as a CSS variable so
-    // .media-item-inner's height stays in sync with the layout math.
+    // Compute the CSS-pixel height that scales with the screen's physical resolution
+    // so items take up roughly the same proportion of the screen on lower resolution
+    // displays (like 1080p) as they do on 4K, then expose it as a CSS variable.
     function applyItemHeight() {
-        const h = ITEM_HEIGHT_PX / window.devicePixelRatio;
+        // Base canonical resolution is 4K (2160 physical pixels tall)
+        const BASE_PHYSICAL_HEIGHT = 2160;
+        const currentPhysicalHeight = window.screen.height * window.devicePixelRatio;
+
+        const scale = currentPhysicalHeight / BASE_PHYSICAL_HEIGHT;
+        const scaledPhysicalHeight = ITEM_HEIGHT_PX * scale;
+
+        const h = scaledPhysicalHeight / window.devicePixelRatio;
         document.documentElement.style.setProperty('--item-height', h + 'px');
         return h;
     }
