@@ -55,16 +55,31 @@
         const item = mediaArray[currentIndex];
         lightboxContent.innerHTML = '';
 
+        lightbox.classList.add('loading');
+
         if (item.type === 'video') {
             const video = document.createElement('video');
             video.src = item.src;
             video.controls = true;
             video.autoplay = false;
+            video.addEventListener('loadeddata', () => {
+                lightbox.classList.remove('loading');
+            });
+            video.addEventListener('error', () => {
+                lightbox.classList.remove('loading');
+            });
             lightboxContent.appendChild(video);
         } else {
             const img = document.createElement('img');
             img.src = item.src;
-            img.alt = item.title;
+            img.addEventListener('load', () => {
+                img.alt = item.title;
+                lightbox.classList.remove('loading');
+            });
+            img.addEventListener('error', () => {
+                img.alt = item.title;
+                lightbox.classList.remove('loading');
+            });
             lightboxContent.appendChild(img);
         }
 
@@ -292,7 +307,15 @@
         const BASE_PHYSICAL_HEIGHT = 2160;
         const currentPhysicalHeight = window.screen.height * window.devicePixelRatio;
 
-        const scale = currentPhysicalHeight / BASE_PHYSICAL_HEIGHT;
+        let scale = currentPhysicalHeight / BASE_PHYSICAL_HEIGHT;
+
+        // On narrow screens (like phones), height-based scaling creates disproportionately 
+        // massive items. Apply an additional shrink multiplier based on viewport width.
+        if (window.innerWidth <= 768) {
+            // Shrinks linearly from 1.0 at 768px down to ~0.5 at 384px width.
+            scale *= (window.innerWidth / 768);
+        }
+
         const scaledPhysicalHeight = ITEM_HEIGHT_PX * scale;
 
         const h = scaledPhysicalHeight / window.devicePixelRatio;
@@ -317,14 +340,48 @@
                 item.style.position = 'static';
                 item.style.top = '';
                 item.style.left = '';
+                item.style.width = '';
+                item.style.height = '';
+
+                // Clear any inline styles from previous passes
+                const inner = item.querySelector('.media-item-inner');
+                if (inner) {
+                    inner.style.width = '';
+                    inner.style.height = '';
+                }
             });
 
-            // 2. Force a layout flush, then read the real CSS-pixel widths.
+            // 2. Force a layout flush, then read the real CSS-pixel heights and widths.
             grid.getBoundingClientRect();
+
+            // 2.5 Ensure NO container exceeds 1100px.
+            // If it does, we must explicitly calculate the new proportional height
+            // to override the CSS `--item-height` inheritance.
+            items.forEach(item => {
+                const inner = item.querySelector('.media-item-inner');
+                if (inner) {
+                    const rect = inner.getBoundingClientRect();
+                    if (rect.width > 1100) {
+                        const ratio = 1100 / rect.width;
+                        const newHeight = rect.height * ratio;
+
+                        inner.style.width = '1100px';
+                        inner.style.height = `${newHeight}px`;
+
+                        item.style.width = '1100px';
+                        item.style.height = `${newHeight}px`;
+                    }
+                }
+            });
+
+            // Re-read widths and heights after clamping
             const gridWidth = grid.getBoundingClientRect().width;
-            const itemWidths = items.map(item =>
-                item.getBoundingClientRect().width
-            );
+            const itemRects = items.map(item => {
+                const inner = item.querySelector('.media-item-inner');
+                return inner ? inner.getBoundingClientRect() : item.getBoundingClientRect();
+            });
+            const itemWidths = itemRects.map(rect => rect.width);
+            const itemHeights = itemRects.map(rect => rect.height);
 
             // 3. Pack items into rows left-to-right, recording row membership.
             let rowTop = 0;
@@ -342,7 +399,11 @@
                     rows.push([]);
                 }
 
-                positions.push({ top: rowTop, left: rowX });
+                // If the item shrank vertically, offset it so it stays vertically centered
+                const h = itemHeights[i];
+                const yOffset = h < effectiveHeight ? (effectiveHeight - h) / 2 : 0;
+
+                positions.push({ top: rowTop + yOffset, left: rowX });
                 rows[rows.length - 1].push(i);
                 rowX += w + GAP;
             });
