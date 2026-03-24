@@ -294,14 +294,28 @@ a {
     min-width: 300px;
 }
 
-/* Force alt text to display properly */
-.name-box .header-svg::after {
-    content: attr(alt);
+/* Show alt text via parent wrapper while SVG loads.
+   img::after is invalid on replaced elements — use parent::before instead.
+   Positioned absolutely so it sits behind the img (z-index:2) and is
+   covered once the SVG renders; no JS required. */
+.name-box-inner[data-alt]::before {
+    content: attr(data-alt);
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
     color: var(--black);
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.name-box-inner.svg-loaded::before {
+    display: none;
 }
 
 /* ============================================
@@ -350,15 +364,31 @@ a {
     min-width: 150px;
 }
 
-/* Force alt text to display properly */
-.info-section-header .section-svg::after,
-.content-section-header .section-svg::after {
-    content: attr(alt);
+/* Show alt text via parent wrapper while SVG loads.
+   img::after is invalid on replaced elements — use parent::before instead.
+   Positioned absolutely so it sits behind the img (z-index:2) and is
+   covered once the SVG renders; no JS required. */
+.info-section-header-inner[data-alt]::before,
+.content-section-header-inner[data-alt]::before {
+    content: attr(data-alt);
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
     color: var(--black);
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.info-section-header-inner.svg-loaded::before,
+.content-section-header-inner.svg-loaded::before {
+    display: none;
 }
 
 .info-section-box {
@@ -825,10 +855,13 @@ a.content-section-header:hover .content-section-header-inner {
 }
 
 /* Scroll Offset for Fixed Header + Fixed Contents */
-#contact,
 #video,
+[id="3d-cg"],
 #graphic-design,
 #motion-graphics {
-    scroll-margin-top: 280px;
-    /* Increased offset (~140px header + ~120px contents + buffer) */
+    scroll-margin-top: 260px;
+}
+
+#contact {
+    scroll-margin-top: 500px;
 }

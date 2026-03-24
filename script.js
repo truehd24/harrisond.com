@@ -10,7 +10,6 @@
     const lightboxMeta = lightbox ? lightbox.querySelector('.lightbox-meta') : null;
     const lightboxClose = lightbox ? lightbox.querySelector('.lightbox-close') : null;
 
-
     const mediaItems = document.querySelectorAll('.media-item');
 
     let currentIndex = 0;
@@ -44,42 +43,32 @@
         lightbox.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
 
-        // Stop video if playing
         const video = lightboxContent.querySelector('video');
-        if (video) {
-            video.pause();
-        }
+        if (video) video.pause();
     }
 
     function updateLightboxContent() {
         const item = mediaArray[currentIndex];
         lightboxContent.innerHTML = '';
-
         lightbox.classList.add('loading');
 
         if (item.type === 'video') {
             const video = document.createElement('video');
             video.src = item.src;
             video.controls = true;
-            video.autoplay = false;
-            video.addEventListener('loadeddata', () => {
-                lightbox.classList.remove('loading');
-            });
-            video.addEventListener('error', () => {
-                lightbox.classList.remove('loading');
-            });
+            const done = () => lightbox.classList.remove('loading');
+            video.addEventListener('loadeddata', done);
+            video.addEventListener('error', done);
             lightboxContent.appendChild(video);
         } else {
             const img = document.createElement('img');
             img.src = item.src;
-            img.addEventListener('load', () => {
+            const done = () => {
                 img.alt = item.title;
                 lightbox.classList.remove('loading');
-            });
-            img.addEventListener('error', () => {
-                img.alt = item.title;
-                lightbox.classList.remove('loading');
-            });
+            };
+            img.addEventListener('load', done);
+            img.addEventListener('error', done);
             lightboxContent.appendChild(img);
         }
 
@@ -87,26 +76,18 @@
         lightboxMeta.textContent = item.meta;
     }
 
-
-
     // ============================================
     // EVENT LISTENERS
     // ============================================
-
-    // Build media array on load (only if lightbox exists)
     if (lightbox) {
         buildMediaArray();
 
         // Media item interactions
-        mediaItems.forEach((item, index) => {
+        mediaItems.forEach((item) => {
             const youtubeUrl = item.dataset.youtube;
             if (youtubeUrl) {
-                // YouTube items open in new tab
-                item.addEventListener('click', () => {
-                    window.open(youtubeUrl, '_blank');
-                });
+                item.addEventListener('click', () => window.open(youtubeUrl, '_blank'));
             } else {
-                // Lightbox items — find this item's index in the lightbox-only array
                 const lightboxIndex = mediaArray.findIndex(m => m._element === item);
                 item.addEventListener('click', () => openLightbox(lightboxIndex));
             }
@@ -118,69 +99,59 @@
                 let previewImg = null;
                 let removeTimeout = null;
                 // Cached Object URL — fetched once, reused on every subsequent hover.
-                // Assigning the same blob: URL to src restarts animated AVIFs from frame 0.
+                // Reassigning the same blob: URL to src restarts animated AVIFs from frame 0.
                 let cachedObjectURL = null;
                 let fetchController = null;
 
                 item.addEventListener('mouseenter', () => {
                     const currentPreview = item.dataset.preview;
-                    if (img && currentPreview) {
-                        item.isHovered = true;
-                        clearTimeout(removeTimeout);
+                    if (!img || !currentPreview) return;
 
-                        if (!previewImg) {
-                            previewImg = document.createElement('img');
-                            previewImg.className = 'media-preview-img';
-                            previewImg.style.position = 'absolute';
-                            previewImg.style.top = '0';
-                            previewImg.style.left = '0';
-                            previewImg.style.width = '100%';
-                            previewImg.style.height = '100%';
-                            previewImg.style.objectFit = 'cover';
-                            previewImg.style.opacity = '0';
-                            previewImg.style.transition = 'opacity 0.25s ease';
+                    item.isHovered = true;
+                    clearTimeout(removeTimeout);
 
-                            img.parentElement.appendChild(previewImg);
+                    if (!previewImg) {
+                        previewImg = document.createElement('img');
+                        previewImg.className = 'media-preview-img';
 
-                            previewImg.addEventListener('error', () => {
-                                console.warn('Preview image failed to load. Disabling preview for this item:', currentPreview);
-                                item.dataset.preview = '';
+                        previewImg.addEventListener('error', () => {
+                            console.warn('Preview image failed to load:', currentPreview);
+                            item.dataset.preview = '';
+                            previewImg.remove();
+                            previewImg = null;
+                            item.classList.remove('playing-preview');
+                        });
+
+                        img.parentElement.appendChild(previewImg);
+                    }
+
+                    const showImage = () => {
+                        if (item.isHovered && previewImg) {
+                            previewImg.style.opacity = '1';
+                            item.classList.add('playing-preview');
+                        }
+                    };
+
+                    if (cachedObjectURL) {
+                        // Reassign blob: URL to restart animation
+                        previewImg.onload = showImage;
+                        previewImg.src = '';
+                        previewImg.src = cachedObjectURL;
+                        if (previewImg.complete) showImage();
+                    } else {
+                        // First hover — fetch once and cache as a blob
+                        fetchController = new AbortController();
+                        fetch(currentPreview, { signal: fetchController.signal })
+                            .then(r => r.blob())
+                            .then(blob => {
+                                cachedObjectURL = URL.createObjectURL(blob);
                                 if (previewImg) {
-                                    previewImg.remove();
-                                    previewImg = null;
+                                    previewImg.onload = showImage;
+                                    previewImg.src = cachedObjectURL;
+                                    if (previewImg.complete) showImage();
                                 }
-                                item.classList.remove('playing-preview');
-                            });
-                        }
-
-                        const showImage = () => {
-                            if (item.isHovered && previewImg) {
-                                previewImg.style.opacity = '1';
-                                item.classList.add('playing-preview');
-                            }
-                        };
-
-                        if (cachedObjectURL) {
-                            // Already fetched — reassign the same blob: URL to restart animation
-                            previewImg.onload = showImage;
-                            previewImg.src = '';
-                            previewImg.src = cachedObjectURL;
-                            if (previewImg.complete) showImage();
-                        } else {
-                            // First hover — fetch once and cache as a blob
-                            fetchController = new AbortController();
-                            fetch(currentPreview, { signal: fetchController.signal })
-                                .then(r => r.blob())
-                                .then(blob => {
-                                    cachedObjectURL = URL.createObjectURL(blob);
-                                    if (previewImg) {
-                                        previewImg.onload = showImage;
-                                        previewImg.src = cachedObjectURL;
-                                        if (previewImg.complete) showImage();
-                                    }
-                                })
-                                .catch(() => { /* aborted or network error — silently ignore */ });
-                        }
+                            })
+                            .catch(() => { /* aborted or network error — silently ignore */ });
                     }
                 });
 
@@ -189,48 +160,31 @@
                     if (previewImg) {
                         previewImg.style.opacity = '0';
                         item.classList.remove('playing-preview');
-
                         removeTimeout = setTimeout(() => {
-                            if (!item.isHovered && previewImg) {
+                            if (previewImg) {
                                 previewImg.remove();
                                 previewImg = null;
                             }
-                        }, 250); // Wait for transition
+                        }, 250);
                     }
                 });
             }
         });
 
-        // Lightbox controls
         lightboxClose.addEventListener('click', closeLightbox);
 
-        // Click outside to close
         lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
+            if (e.target === lightbox) closeLightbox();
         });
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-
-            switch (e.key) {
-                case 'Escape':
-                    closeLightbox();
-                    break;
-
-            }
+            if (lightbox.classList.contains('active') && e.key === 'Escape') closeLightbox();
         });
-    } // end if (lightbox)
-
-
-
+    }
 
     // ============================================
     // PRIORITIZED IMAGE LOADING
     // ============================================
-
     /**
      * Force-load all lazy images inside `section` immediately by switching
      * them from loading="lazy" to loading="eager" and re-assigning their src.
@@ -263,31 +217,23 @@
             const target = id ? document.getElementById(id) : document.querySelector(href);
             if (!target) return;
 
-            // Eagerly load the target section's images before we scroll.
             prioritizeSection(target);
-
             window.history.pushState(null, '', href);
 
             // Re-run masonry first so section positions are correct,
-            // then wait two rAF ticks for the browser to commit the layout
-            // before scrolling (otherwise scroll lands at pre-masonry position).
+            // then instant-jump so intermediate sections never enter the viewport.
             layoutMasonryGrids();
-            // Instant jump so intermediate sections never enter the viewport
-            // and their lazy images don't compete for bandwidth.
             target.scrollIntoView({ behavior: 'instant' });
         });
     });
 
-    // Also handle direct loads to a hash URL
+    // Handle direct loads to a hash URL
     window.addEventListener('load', () => {
         if (window.location.hash) {
-            const hash = window.location.hash;
-            const id = hash.startsWith('#') ? hash.slice(1) : null;
-            const target = id ? document.getElementById(id) : null;
+            const id = window.location.hash.slice(1);
+            const target = document.getElementById(id);
             if (target) {
-                // Eagerly load the target section before scrolling to it.
                 prioritizeSection(target);
-                // Instant jump — avoids loading intermediate sections on throttled connections.
                 setTimeout(() => target.scrollIntoView({ behavior: 'instant' }), 100);
             }
         }
@@ -299,26 +245,19 @@
     const GAP = 25;
     const ITEM_HEIGHT_PX = 550; // canonical 4K height in device/physical pixels
 
-    // Compute the CSS-pixel height that scales with the screen's physical resolution
-    // so items take up roughly the same proportion of the screen on lower resolution
-    // displays (like 1080p) as they do on 4K, then expose it as a CSS variable.
+    // Compute the CSS-pixel height that scales with the screen's physical resolution.
     function applyItemHeight() {
-        // Base canonical resolution is 4K (2160 physical pixels tall)
         const BASE_PHYSICAL_HEIGHT = 2160;
         const currentPhysicalHeight = window.screen.height * window.devicePixelRatio;
 
         let scale = currentPhysicalHeight / BASE_PHYSICAL_HEIGHT;
 
-        // On narrow screens (like phones), height-based scaling creates disproportionately 
-        // massive items. Apply an additional shrink multiplier based on viewport width.
+        // On narrow screens (like phones), apply an additional shrink based on viewport width.
         if (window.innerWidth <= 768) {
-            // Shrinks linearly from 1.0 at 768px down to ~0.5 at 384px width.
             scale *= (window.innerWidth / 768);
         }
 
-        const scaledPhysicalHeight = ITEM_HEIGHT_PX * scale;
-
-        const h = scaledPhysicalHeight / window.devicePixelRatio;
+        const h = (ITEM_HEIGHT_PX * scale) / window.devicePixelRatio;
         document.documentElement.style.setProperty('--item-height', h + 'px');
         return h;
     }
@@ -333,8 +272,6 @@
             if (items.length === 0) return;
 
             // 1. Reset to normal flow so CSS can size each item naturally.
-            //    CSS uses height:var(--item-height) + aspect-ratio, which the
-            //    browser resolves to the correct DPI-adjusted CSS-pixel width.
             grid.style.height = '';
             items.forEach(item => {
                 item.style.position = 'static';
@@ -343,7 +280,6 @@
                 item.style.width = '';
                 item.style.height = '';
 
-                // Clear any inline styles from previous passes
                 const inner = item.querySelector('.media-item-inner');
                 if (inner) {
                     inner.style.width = '';
@@ -351,23 +287,18 @@
                 }
             });
 
-            // 2. Force a layout flush, then read the real CSS-pixel heights and widths.
+            // 2. Force a layout flush, then read the real CSS-pixel dimensions.
             grid.getBoundingClientRect();
 
-            // 2.5 Ensure NO container exceeds 1100px.
-            // If it does, we must explicitly calculate the new proportional height
-            // to override the CSS `--item-height` inheritance.
+            // 2.5 Clamp any item wider than 1100px, preserving its aspect ratio.
             items.forEach(item => {
                 const inner = item.querySelector('.media-item-inner');
                 if (inner) {
                     const rect = inner.getBoundingClientRect();
                     if (rect.width > 1100) {
-                        const ratio = 1100 / rect.width;
-                        const newHeight = rect.height * ratio;
-
+                        const newHeight = rect.height * (1100 / rect.width);
                         inner.style.width = '1100px';
                         inner.style.height = `${newHeight}px`;
-
                         item.style.width = '1100px';
                         item.style.height = `${newHeight}px`;
                     }
@@ -380,14 +311,13 @@
                 const inner = item.querySelector('.media-item-inner');
                 return inner ? inner.getBoundingClientRect() : item.getBoundingClientRect();
             });
-            const itemWidths = itemRects.map(rect => rect.width);
-            const itemHeights = itemRects.map(rect => rect.height);
+            const itemWidths = itemRects.map(r => r.width);
+            const itemHeights = itemRects.map(r => r.height);
 
             // 3. Pack items into rows left-to-right, recording row membership.
             let rowTop = 0;
             let rowX = 0;
             const positions = [];
-            // rows[r] = array of item indices in that row
             const rows = [[]];
 
             items.forEach((item, i) => {
@@ -399,7 +329,6 @@
                     rows.push([]);
                 }
 
-                // If the item shrank vertically, offset it so it stays vertically centered
                 const h = itemHeights[i];
                 const yOffset = h < effectiveHeight ? (effectiveHeight - h) / 2 : 0;
 
@@ -408,23 +337,18 @@
                 rowX += w + GAP;
             });
 
-            const totalHeight = rowTop + effectiveHeight;
-            grid.style.height = totalHeight + 'px';
+            grid.style.height = (rowTop + effectiveHeight) + 'px';
 
-            // 4. Center each row: shift every item in the row by the
-            //    half-remainder so the row sits in the middle of the grid.
+            // 4. Center each row horizontally.
             rows.forEach(rowIndices => {
                 if (rowIndices.length === 0) return;
                 const last = rowIndices[rowIndices.length - 1];
-                // Row width = right edge of last item minus its trailing gap
                 const rowWidth = positions[last].left + itemWidths[last];
                 const offset = Math.max(0, (gridWidth - rowWidth) / 2);
-                rowIndices.forEach(i => {
-                    positions[i].left += offset;
-                });
+                rowIndices.forEach(i => { positions[i].left += offset; });
             });
 
-            // 5. Apply absolute positions — CSS still owns width/height.
+            // 5. Apply absolute positions.
             items.forEach((item, idx) => {
                 item.style.position = 'absolute';
                 item.style.top = positions[idx].top + 'px';
@@ -435,18 +359,15 @@
     window.layoutMasonryGrids = layoutMasonryGrids;
 
     function initMasonry() {
-        const grids = document.querySelectorAll('.media-grid');
-        grids.forEach((grid) => {
+        document.querySelectorAll('.media-grid').forEach((grid) => {
             const ro = new ResizeObserver(() => requestAnimationFrame(layoutMasonryGrids));
             ro.observe(grid);
         });
 
-        // Re-layout when the user moves the browser window to a display with
-        // a different devicePixelRatio (e.g. from a 4K monitor to a 1080p one).
+        // Re-layout when devicePixelRatio changes (e.g. moving window between monitors).
         let dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
         const onDprChange = () => {
             requestAnimationFrame(layoutMasonryGrids);
-            // Re-arm the listener for the new DPR.
             dprQuery.removeEventListener('change', onDprChange);
             dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
             dprQuery.addEventListener('change', onDprChange);
@@ -457,73 +378,74 @@
     // ============================================
     // THUMBNAIL DECODE DETECTION
     // ============================================
-    // Adds .loaded to each thumb *after* the browser has decoded the pixels
-    // (img.decode() resolves later than the load event), which is the exact
-    // moment the CSS pulse should stop.
+    // Adds .loaded to each thumb after img.decode() resolves — the exact moment
+    // the CSS pulse animation should stop.
     document.querySelectorAll('img.media-thumb').forEach(img => {
         const markLoaded = () => img.classList.add('loaded');
         if (img.complete) {
             img.decode().then(markLoaded).catch(markLoaded);
         } else {
-            img.addEventListener('load', () =>
-                img.decode().then(markLoaded).catch(markLoaded)
-            );
+            img.addEventListener('load', () => img.decode().then(markLoaded).catch(markLoaded));
             img.addEventListener('error', markLoaded);
         }
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        layoutMasonryGrids();
-        initMasonry();
+    // ============================================
+    // SVG ALT TEXT — HIDE PLACEHOLDER ONCE LOADED
+    // ============================================
+    // Adds .svg-loaded to the parent wrapper when the SVG img fires load,
+    // which hides the ::before placeholder text via CSS.
+    document.querySelectorAll('img.header-svg, img.section-svg').forEach(img => {
+        const wrapper = img.parentElement;
+        if (!wrapper) return;
+        const markLoaded = () => wrapper.classList.add('svg-loaded');
+        if (img.complete && img.naturalWidth > 0) {
+            markLoaded();
+        } else {
+            img.addEventListener('load', markLoaded);
+            img.addEventListener('error', markLoaded); // hide on error too
+        }
     });
+
     // ============================================
     // STICKY HEADER NAME SHRINK
     // ============================================
     const headerName = document.querySelector('.header-name');
     if (headerName) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                headerName.classList.add('is-stuck');
-            } else {
-                headerName.classList.remove('is-stuck');
-            }
+            headerName.classList.toggle('is-stuck', window.scrollY > 10);
         });
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const currentYear = new Date().getFullYear();
+    // ============================================
+    // INITIALISATION (single DOMContentLoaded)
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set current year in footer
         const yearElem = document.getElementById('currentYear');
-        if (yearElem) yearElem.textContent = currentYear;
+        if (yearElem) yearElem.textContent = new Date().getFullYear();
 
-        const allImages = document.querySelectorAll('.media-thumb');
-        if (allImages.length > 0) {
-            let imagesLoaded = 0;
-            allImages.forEach(img => {
-                if (img.complete) {
-                    imagesLoaded++;
-                } else {
-                    img.addEventListener('load', () => {
-                        imagesLoaded++;
-                        if (imagesLoaded === allImages.length) {
-                            layoutMasonryGrids();
-                        }
-                    });
-                    img.addEventListener('error', () => {
-                        imagesLoaded++;
-                        if (imagesLoaded === allImages.length) {
-                            layoutMasonryGrids();
-                        }
-                    });
-                }
-            });
-            if (imagesLoaded === allImages.length) {
+        // Initial masonry layout + observers
+        layoutMasonryGrids();
+        initMasonry();
+
+        // Re-layout once all thumbnails have loaded
+        const allThumbs = Array.from(document.querySelectorAll('.media-thumb'));
+        if (allThumbs.length > 0) {
+            const pending = allThumbs.filter(img => !img.complete);
+            if (pending.length === 0) {
                 layoutMasonryGrids();
+            } else {
+                const settle = () => {
+                    if (allThumbs.every(img => img.complete)) layoutMasonryGrids();
+                };
+                pending.forEach(img => {
+                    img.addEventListener('load', settle);
+                    img.addEventListener('error', settle);
+                });
             }
-        } else {
-            layoutMasonryGrids();
         }
 
         window.addEventListener('resize', layoutMasonryGrids);
     });
 })();
-
