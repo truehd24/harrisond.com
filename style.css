@@ -627,9 +627,18 @@ a.content-section-header:hover .content-section-header-inner {
     object-fit: cover;
 }
 
-.media-item:hover
-/* Hide overlay when preview is playing */
-.media-item.playing-preview
+/* AVIF preview overlay — created dynamically by JS on hover */
+.media-preview-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 2;
+}
 
 /* .content-section styles moved to main definition above */
 .content-section:last-child {
