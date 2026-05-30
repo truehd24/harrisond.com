@@ -853,6 +853,20 @@ a.content-section-header:hover .content-section-header-inner {
 
     .name-box-inner {
         padding: 12px 16px;
+        overflow: hidden;
+    }
+
+    .name-box .header-svg {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .contact-item-value {
+        font-size: 16px;
+    }
+
+    .contact-item-label {
+        font-size: 14px;
     }
 
     .footer {
@@ -860,6 +874,30 @@ a.content-section-header:hover .content-section-header-inner {
         text-align: center;
         padding: 24px;
         margin: 24px 24px 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .contact-item-value {
+        font-size: 14px;
+    }
+
+    .contact-item-label {
+        font-size: 12px;
+    }
+}
+
+/* Lightbox info: keep above mobile browser chrome (URL bar at bottom) */
+@media (max-width: 900px) {
+    .lightbox-info {
+        bottom: max(20px, env(safe-area-inset-bottom, 0px) + 20px);
+    }
+
+    .lightbox {
+        /* dvh respects the dynamic viewport (shrinks for URL bar);
+           100vh is the fallback for browsers without dvh support */
+        height: 100vh;
+        height: 100dvh;
     }
 }
 
