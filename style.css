@@ -85,7 +85,7 @@
 }
 
 :root {
-    --bg: #FFFFFF;
+    --bg: #ffcc74;
     --accent: #F36D21;
     --black: #231F20;
     --border-weight: 5.33px;
@@ -98,49 +98,6 @@
     /* Adjustable Stroke Widths */
     --stroke-width-lg: 2px;
     --stroke-width-sm: 1.5px;
-
-    /* Rounded stroke simulations using text-shadow and calc()
-
-    --stroke-5-white:
-        calc(var(--stroke-width-lg) * 1) 0 0 #fff,
-        calc(var(--stroke-width-lg) * -1) 0 0 #fff,
-        0 calc(var(--stroke-width-lg) * 1) 0 #fff,
-        0 calc(var(--stroke-width-lg) * -1) 0 #fff,
-        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * 0.7) 0 #fff,
-        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * 0.7) 0 #fff,
-        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * -0.7) 0 #fff,
-        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * -0.7) 0 #fff;
-
-    --stroke-5-accent:
-        calc(var(--stroke-width-lg) * 1) 0 0 var(--accent),
-        calc(var(--stroke-width-lg) * -1) 0 0 var(--accent),
-        0 calc(var(--stroke-width-lg) * 1) 0 var(--accent),
-        0 calc(var(--stroke-width-lg) * -1) 0 var(--accent),
-        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * 0.7) 0 var(--accent),
-        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * 0.7) 0 var(--accent),
-        calc(var(--stroke-width-lg) * 0.7) calc(var(--stroke-width-lg) * -0.7) 0 var(--accent),
-        calc(var(--stroke-width-lg) * -0.7) calc(var(--stroke-width-lg) * -0.7) 0 var(--accent);
-
-    --stroke-3-white:
-        calc(var(--stroke-width-sm) * 1) 0 0 #fff,
-        calc(var(--stroke-width-sm) * -1) 0 0 #fff,
-        0 calc(var(--stroke-width-sm) * 1) 0 #fff,
-        0 calc(var(--stroke-width-sm) * -1) 0 #fff,
-        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * 0.7) 0 #fff,
-        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * 0.7) 0 #fff,
-        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * -0.7) 0 #fff,
-        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * -0.7) 0 #fff;
-
-    --stroke-3-accent:
-        calc(var(--stroke-width-sm) * 1) 0 0 var(--accent),
-        calc(var(--stroke-width-sm) * -1) 0 0 var(--accent),
-        0 calc(var(--stroke-width-sm) * 1) 0 var(--accent),
-        0 calc(var(--stroke-width-sm) * -1) 0 var(--accent),
-        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * 0.7) 0 var(--accent),
-        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * 0.7) 0 var(--accent),
-        calc(var(--stroke-width-sm) * 0.7) calc(var(--stroke-width-sm) * -0.7) 0 var(--accent),
-        calc(var(--stroke-width-sm) * -0.7) calc(var(--stroke-width-sm) * -0.7) 0 var(--accent);
-    */
 }
 
 html {
@@ -152,6 +109,7 @@ body {
     color: var(--black);
     line-height: 1.5;
     font-size: 14px;
+    background-color: var(--bg);
 }
 
 /* ============================================
