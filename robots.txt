@@ -12,8 +12,5 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
-User-agent: CloudflareBrowserRenderingCrawler
-Disallow: /
-
 User-agent: meta-externalagent
 Disallow: /
