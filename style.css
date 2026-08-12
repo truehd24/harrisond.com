@@ -112,6 +112,20 @@ body {
     background-color: var(--bg);
 }
 
+/* Visually hidden text for SEO heading structure - no visual impact */
+.seo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* ============================================
    TYPOGRAPHY - Work Sans 85% Condensed
 ============================================ */
