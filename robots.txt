@@ -1,4 +1,4 @@
 User-agent: *
-Content-signal: search=yes, ai-train=no, use=reference
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /media/
