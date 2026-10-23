@@ -1,4 +1,5 @@
 User-agent: *
 Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
-Disallow: /media/
+Disallow: /media/vids/
+Disallow: /media/web/
